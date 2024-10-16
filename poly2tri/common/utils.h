@@ -48,7 +48,7 @@ namespace p2t {
 
 const double PI_3div4 = 3 * M_PI / 4;
 const double PI_div2 = 1.57079632679489661923;
-const double EPSILON = 1e-12;
+const double EPSILON = 1e-16;
 
 enum Orientation { CW, CCW, COLLINEAR };
 
@@ -62,23 +62,7 @@ enum Orientation { CW, CCW, COLLINEAR };
  *              =  (x1-x3)*(y2-y3) - (y1-y3)*(x2-x3)
  * </pre>
  */
-Orientation Orient2d(const Point& pa, const Point& pb, const Point& pc)
-{
-  double detleft = (pa.x - pc.x) * (pb.y - pc.y);
-  double detright = (pa.y - pc.y) * (pb.x - pc.x);
-  double val = detleft - detright;
-
-// Using a tolerance here fails on concave-by-subepsilon boundaries
-//   if (val > -EPSILON && val < EPSILON) {
-// Using == on double makes -Wfloat-equal warnings yell at us
-  if (std::fpclassify(val) == FP_ZERO) {
-    return COLLINEAR;
-  } else if (val > 0) {
-    return CCW;
-  }
-  return CW;
-}
-
+Orientation Orient2d(const Point& pa, const Point& pb, const Point& pc);
 /*
 bool InScanArea(Point& pa, Point& pb, Point& pc, Point& pd)
 {
@@ -113,18 +97,6 @@ bool InScanArea(Point& pa, Point& pb, Point& pc, Point& pd)
 
 */
 
-bool InScanArea(const Point& pa, const Point& pb, const Point& pc, const Point& pd)
-{
-  double oadb = (pa.x - pb.x)*(pd.y - pb.y) - (pd.x - pb.x)*(pa.y - pb.y);
-  if (oadb >= -EPSILON) {
-    return false;
-  }
-
-  double oadc = (pa.x - pc.x)*(pd.y - pc.y) - (pd.x - pc.x)*(pa.y - pc.y);
-  if (oadc <= EPSILON) {
-    return false;
-  }
-  return true;
-}
+bool InScanArea(const Point& pa, const Point& pb, const Point& pc, const Point& pd);
 
 }

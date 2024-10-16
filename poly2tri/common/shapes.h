@@ -138,7 +138,7 @@ struct P2T_DLL_SYMBOL Edge {
         p = &p2;
       } else if (p1.x == p2.x) {
         // Repeat points
-        throw std::runtime_error("Edge::Edge: p1 == p2");
+        //throw std::runtime_error("Edge::Edge: p1 == p2");
       }
     }
 
