@@ -8,6 +8,7 @@ option(P2T_BUILD_TESTBED "Build the testbed application" OFF)
 
 file(GLOB SOURCES poly2tri/common/*.cc poly2tri/sweep/*.cc)
 file(GLOB HEADERS poly2tri/*.h poly2tri/common/*.h poly2tri/sweep/*.h)
+
 add_library(poly2tri ${SOURCES} ${HEADERS})
 target_include_directories(poly2tri INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -16,8 +17,11 @@ if (EMSCRIPTEN)
 	set(THREADS_PREFER_PTHREAD_FLAG ON)
 	find_package(Threads REQUIRED)
 	target_link_libraries(poly2tri PRIVATE Threads::Threads)
-	add_link_options("SHELL:-s USE_PTHREADS -matomics -mbulk-memory")
-	set_target_properties(poly2tri PROPERTIES COMPILE_FLAGS "-s USE_PTHREADS")
+	add_link_options("SHELL:-s USE_PTHREADS -matomics -mbulk-memory -s SIDE_MODULE=1")
+	set_target_properties(poly2tri PROPERTIES
+		COMPILE_FLAGS "-s USE_PTHREADS -s SIDE_MODULE=1"
+		POSITION_INDEPENDENT_CODE ON
+	)
 
 
 	if (Threads_FOUND)
@@ -32,6 +36,11 @@ if(poly2tri_target_type STREQUAL SHARED_LIBRARY)
   target_compile_definitions(poly2tri PRIVATE P2T_SHARED_EXPORTS)
 else()
   target_compile_definitions(poly2tri PUBLIC P2T_STATIC_EXPORTS)
+  if (WIN32)
+	set_target_properties(poly2tri PROPERTIES
+		COMPILE_OPTIONS "$<$<CONFIG:Debug>:/MTd>$<$<CONFIG:Release>:/MT>"
+	)
+  endif()
 endif()
 
 if(P2T_BUILD_TESTS)
