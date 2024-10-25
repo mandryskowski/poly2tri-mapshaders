@@ -36,6 +36,9 @@ if(poly2tri_target_type STREQUAL SHARED_LIBRARY)
   target_compile_definitions(poly2tri PRIVATE P2T_SHARED_EXPORTS)
 else()
   target_compile_definitions(poly2tri PUBLIC P2T_STATIC_EXPORTS)
+  set_target_properties(poly2tri PROPERTIES
+	POSITION_INDEPENDENT_CODE ON
+  )
   if (WIN32)
 	set_target_properties(poly2tri PROPERTIES
 		COMPILE_OPTIONS "$<$<CONFIG:Debug>:/MTd>$<$<CONFIG:Release>:/MT>"
