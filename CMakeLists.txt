@@ -39,11 +39,11 @@ else()
   set_target_properties(poly2tri PROPERTIES
 	POSITION_INDEPENDENT_CODE ON
   )
-  if (WIN32)
-	set_target_properties(poly2tri PROPERTIES
-		COMPILE_OPTIONS "$<$<CONFIG:Debug>:/MTd>$<$<CONFIG:Release>:/MT>"
-	)
-  endif()
+#  if (WIN32)
+#	set_target_properties(poly2tri PROPERTIES
+#		COMPILE_OPTIONS "$<$<CONFIG:Debug>:/MTd>$<$<CONFIG:Release>:/MT>"
+#	)
+#  endif()
 endif()
 
 if(P2T_BUILD_TESTS)
